@@ -1,0 +1,60 @@
+schemaVersion: 2.1.0
+metadata:
+  name: react-web-app
+attributes:
+  che-theia.eclipse.org/sidecar-policy: USE_DEV_CONTAINER
+components:
+  - name: nodejs
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi8-3735d4f
+      endpoints:
+        - exposure: public
+          name: nodejs
+          protocol: http
+          targetPort: 3000
+      memoryLimit: 1G
+      mountSources: true
+commands:
+  - id: yarn
+    exec:
+      label: "Install Yarn 2"
+      component: nodejs
+      workingDir: ${PROJECTS_ROOT}/react-web-app
+      commandLine: "yarn set version 1.22.5"
+      group:
+        kind: build
+        isDefault: true  
+  - id: dependencies
+    exec:
+      label: "Install all required dependencies"
+      component: nodejs
+      workingDir: ${PROJECTS_ROOT}/react-web-app
+      commandLine: "yarn install"
+      group:
+        kind: build
+        isDefault: true
+  - id: build
+    exec:
+      label: "Build the app"
+      component: nodejs
+      workingDir: ${PROJECTS_ROOT}/react-web-app
+      commandLine: "yarn build"
+      group:
+        kind: build
+        isDefault: true
+  - id: runapp
+    exec:
+      label: "Run the web app"
+      component: nodejs
+      workingDir: ${PROJECTS_ROOT}/react-web-app
+      commandLine: "yarn start"
+      group:
+        kind: run
+  - id: test
+    exec:
+      label: "Launch tests"
+      component: nodejs
+      workingDir: ${PROJECTS_ROOT}/react-web-app
+      commandLine: "yarn test"
+      group:
+        kind: test
